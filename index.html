@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>廠家計算機</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div class="container" style="margin-top: 1%;">
+        <form action="/" onsubmit="CancelSubmit(event)">
+            <div class="input-group mb-3">
+                <span class="input-group-text" for="validationDefault01">請輸入廠家金額</span>
+                <input type="number" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" id="validationDefault01" required>
+                <span class="input-group-text">$</span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" for="validationDefault02">代收%數</span>
+                <input type="number" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" id="validationDefault02" required value=3>
+                <span class="input-group-text">%</span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" for="validationDefault03">若代收%數不滿金額，算做</span>
+                <input type="number" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" id="validationDefault03" required value=100>
+                <span class="input-group-text">$</span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" for="validationDefault04">代付款手續費</span>
+                <input type="number" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" id="validationDefault04" required value=100>
+                <span class="input-group-text">$</span>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" for="validationDefault05">匯率1：</span>
+                <input type="number" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" id="validationDefault05" required>
+            </div>
+            <div class="ButtonLocateSetting">
+                <div class="ml-1"><button class="btn btn-danger DelBtn" type="button">刪除全部</button>
+
+                </div>
+                <button class="btn btn-primary SubmitBtn" type="submit">確定</button>
+            </div>
+            <div class="Cacblock">
+                <div class="Detail">
+
+                </div>
+                <div class="TotalBlock">
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <!-- toastr v2.1.4 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+    <script>
+        function CancelSubmit(e) {
+            e.preventDefault();
+        }
+        let btn = document.querySelector(".SubmitBtn");
+        let arr = JSON.parse(localStorage.getItem('cac-data')) || []
+        let TotalMoney = 0;
+        let FactoryMoney, proxy, enough, PaymentFee, rate
+        let obj = {}
+        window.onload = function () {
+            let temp = '';
+            if (arr.length > 0) {
+                for (let j = 0; j < arr.length; j++) {
+                    if ((FactoryMoney / 100) * proxy < 100) {
+                        str = `<div class="mt-5" data-index="${j}">
+            <div class="fs-1 mb-2"><button class="btn btn-danger Del" type="button">刪除</button>第${j + 1}家廠家</div>
+                <p class="fs-2">金額：(${arr[j].FactoryMoney}<span class="fw-bold text-danger">泰銖</span>+${arr[j].enough}+${arr[j].PaymentFee})/${arr[j].rate} = <span class="fw-bold text-danger">${arr[j].amount}台幣</span></p>
+            </div>`
+                    }
+                    else {
+                        str = `<div class="mt-5" data-index="${j}">
+            <div class="fs-1 mb-2"><button class="btn btn-danger Del" type="button">刪除</button>第${j + 1}家廠家</div>
+                <p class="fs-2">金額：(${arr[j].FactoryMoney}<span class="fw-bold text-danger">泰銖</span>+${arr[j].enough}+${arr[j].PaymentFee})/${arr[j].rate} = <span class="fw-bold text-danger">${arr[j].amount}台幣</span></p>
+            </div>`
+                    }
+                    temp += str
+                    TotalMoney += Number(arr[j].amount);
+                    if (j + 1 == arr.length) {
+                        total = `<div class="Total mt-5"><span class="fs-1 fw-bold text-danger">總金額：${TotalMoney}台幣</span></div>`
+                    }
+                }
+                document.querySelector('.Detail').innerHTML = '';
+                document.querySelector('.TotalBlock').innerHTML = '';
+                document.querySelector('.Detail').innerHTML += temp;
+                document.querySelector('.TotalBlock').innerHTML = total;
+            }
+        }
+        document.querySelector(".Detail").addEventListener("click", (e) => {
+            if (e.target.nodeName !== 'BUTTON') { return }
+            let index = (e.target.parentNode.parentNode.dataset.index)
+            arr.splice(index, 1)
+            localStorage.setItem('cac-data', JSON.stringify(arr))
+            TotalMoney = 0
+            let temp = '';
+            for (let j = 0; j < arr.length; j++) {
+                if ((FactoryMoney / 100) * proxy < 100) {
+                    str = `<div class="mt-5" data-index="${j}">
+                    <div class="fs-1 mb-2"><button class="btn btn-danger Del" type="button">刪除</button>第${j + 1}家廠家</div>
+                        <p class="fs-2">金額：(${arr[j].FactoryMoney}<span class="fw-bold text-danger">泰銖</span>+${arr[j].enough}+${arr[j].PaymentFee})/${arr[j].rate} = <span class="fw-bold text-danger">${arr[j].amount}台幣</span></p>
+                    </div>`
+                }
+                else {
+                    str = `<div class="mt-5" data-index="${j}">
+                    <div class="fs-1 mb-2"><button class="btn btn-danger Del" type="button">刪除</button>第${j + 1}家廠家</div>
+                        <p class="fs-2">金額：(${arr[j].FactoryMoney}<span class="fw-bold text-danger">泰銖</span>+${arr[j].enough}+${arr[j].PaymentFee})/${arr[j].rate} = <span class="fw-bold text-danger">${arr[j].amount}台幣</span></p>
+                    </div>`
+                }
+                temp += str
+                TotalMoney += Number(arr[j].amount);
+                if (j + 1 == arr.length) {
+                    total = `<div class="Total mt-5"><span class="fs-1 fw-bold text-danger">總金額：${TotalMoney}台幣</span></div>`
+                }
+            }
+            if (arr.length == 0) {
+                total = ''
+            }
+            document.querySelector('.Detail').innerHTML = '';
+            document.querySelector('.TotalBlock').innerHTML = '';
+            document.querySelector('.Detail').innerHTML += temp;
+            document.querySelector('.TotalBlock').innerHTML = total;
+            toastr.options = {
+                // 參數設定[註1]
+                "closeButton": false, // 顯示關閉按鈕
+                "debug": false, // 除錯
+                "newestOnTop": false,  // 最新一筆顯示在最上面
+                "progressBar": true, // 顯示隱藏時間進度條
+                "positionClass": "toast-top-center", // 位置的類別
+                "preventDuplicates": false, // 隱藏重覆訊息
+                "onclick": null, // 當點選提示訊息時，則執行此函式
+                "showDuration": "300", // 顯示時間(單位: 毫秒)
+                "hideDuration": "1000", // 隱藏時間(單位: 毫秒)
+                "timeOut": "5000", // 當超過此設定時間時，則隱藏提示訊息(單位: 毫秒)
+                "extendedTimeOut": "1000", // 當使用者觸碰到提示訊息時，離開後超過此設定時間則隱藏提示訊息(單位: 毫秒)
+                "showEasing": "swing", // 顯示動畫時間曲線
+                "hideEasing": "linear", // 隱藏動畫時間曲線
+                "showMethod": "fadeIn", // 顯示動畫效果
+                "hideMethod": "fadeOut" // 隱藏動畫效果
+            }
+            toastr.success("刪除成功");
+        }, false)
+
+        document.querySelector(".DelBtn").addEventListener("click", (e) => {
+            document.querySelector('.Detail').innerHTML = '';
+            document.querySelector('.TotalBlock').innerHTML = '';
+            arr = [];
+            TotalMoney = 0;
+            localStorage.setItem('cac-data', JSON.stringify(arr))
+        })
+
+        btn.addEventListener("click", (e) => {
+            FactoryMoney = Number(document.querySelector('#validationDefault01').value)
+            proxy = Number(document.querySelector('#validationDefault02').value)
+            enough = Number(document.querySelector('#validationDefault03').value)
+            PaymentFee = Number(document.querySelector('#validationDefault04').value)
+            rate = Number(document.querySelector('#validationDefault05').value)
+            document.querySelector('#validationDefault01').value = ''
+            let amount;
+            let str;
+            let TotalMoney;
+            let Total;
+            if (!(FactoryMoney && proxy && enough && PaymentFee && rate)) {
+                return
+            }
+
+            if ((FactoryMoney / 100) * proxy < 100) {
+                amount = Math.round(((FactoryMoney + enough + PaymentFee) / rate))
+                obj.FactoryMoney = FactoryMoney
+                obj.enough = enough
+                obj.PaymentFee = PaymentFee
+                obj.rate = rate
+                obj.amount = amount
+                arr.push(obj)
+                localStorage.setItem('cac-data', JSON.stringify(arr))
+                obj = {};
+            }
+            else {
+                amount = Math.round((((FactoryMoney + ((FactoryMoney / 100) * proxy)) + PaymentFee) / rate))
+                obj.FactoryMoney = FactoryMoney
+                obj.enough = ((FactoryMoney / 100) * proxy)
+                obj.PaymentFee = PaymentFee
+                obj.rate = rate
+                obj.amount = amount
+                arr.push(obj)
+                localStorage.setItem('cac-data', JSON.stringify(arr))
+                obj = {};
+            }
+            for (let i = 0; i < arr.length; i++) {
+                if ((FactoryMoney / 100) * proxy < 100) {
+                    str = `<div class="mt-5" data-index="${i}">
+                    <div class="fs-1 mb-2"><button class="btn btn-danger Del" type="button">刪除</button>第${i + 1}家廠家</div>
+                        <p class="fs-2">金額：(${arr[i].FactoryMoney}<span class="fw-bold text-danger">泰銖</span>+${arr[i].enough}+${arr[i].PaymentFee})/${arr[i].rate} = <span class="fw-bold text-danger">${arr[i].amount}台幣</span></p>
+                    </div>`
+                }
+                else {
+                    str = `<div class="mt-5" data-index="${i}">
+                    <div class="fs-1 mb-2"><button class="btn btn-danger Del" type="button">刪除</button>第${i + 1}家廠家</div>
+                        <p class="fs-2">金額：(${arr[i].FactoryMoney}<span class="fw-bold text-danger">泰銖</span>+${arr[i].enough}+${arr[i].PaymentFee})/${arr[i].rate} = <span class="fw-bold text-danger">${arr[i].amount}台幣</span></p>
+                    </div>`
+                }
+                TotalMoney = TotalMoney || 0
+                TotalMoney += Number(arr[i].amount);
+                if (i + 1 == arr.length) {
+                    total = `<div class="Total mt-5"><span class="fs-1 fw-bold text-danger">總金額：${TotalMoney}台幣</span></div>`
+                }
+            }
+            document.querySelector('.Detail').innerHTML += str;
+            document.querySelector('.TotalBlock').innerHTML = total;
+        }, false)
+    </script>
+</body>
+
+</html>

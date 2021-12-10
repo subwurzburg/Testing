@@ -1,0 +1,10 @@
+.ButtonLocateSetting{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.Total{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
