@@ -207,7 +207,7 @@
             else {
                 amount = Math.round((((FactoryMoney + ((FactoryMoney / 100) * proxy)) + PaymentFee) / rate))
                 obj.FactoryMoney = FactoryMoney
-                obj.enough = ((FactoryMoney / 100) * proxy)
+                obj.enough = Math.round(((FactoryMoney / 100) * proxy))
                 obj.PaymentFee = PaymentFee
                 obj.rate = rate
                 obj.amount = amount
