@@ -28,6 +28,11 @@
                 <span class="input-group-text">%</span>
             </div>
             <div class="input-group mb-3">
+                <span class="input-group-text" for="validationDefault06">代收金額未滿金額</span>
+                <input type="number" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" id="validationDefault06" required value=100>
+            </div>
+            <div class="input-group mb-3">
                 <span class="input-group-text" for="validationDefault03">若代收%數不滿金額，算做</span>
                 <input type="number" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="validationDefault03" required value=100>
@@ -80,7 +85,7 @@
         let btn = document.querySelector(".SubmitBtn");
         let arr = JSON.parse(localStorage.getItem('cac-data')) || []
         let TotalMoney = 0;
-        let FactoryMoney, proxy, enough, PaymentFee, rate
+        let FactoryMoney, proxy, enough, PaymentFee, rate, unenough
         let obj = {}
         window.onload = function () {
             let temp = '';
@@ -178,16 +183,17 @@
             enough = Number(document.querySelector('#validationDefault03').value)
             PaymentFee = Number(document.querySelector('#validationDefault04').value)
             rate = Number(document.querySelector('#validationDefault05').value)
+            unenough = Number(document.querySelector('#validationDefault06').value)
             document.querySelector('#validationDefault01').value = ''
             let amount;
             let str;
             let TotalMoney;
             let Total;
-            if (!(FactoryMoney && proxy && enough && PaymentFee && rate)) {
+            if (!(FactoryMoney && proxy && enough && PaymentFee && rate && unenough)) {
                 return
             }
 
-            if ((FactoryMoney / 100) * proxy < 100) {
+            if ((FactoryMoney / 100) * proxy < unenough) {
                 amount = Math.round(((FactoryMoney + enough + PaymentFee) / rate))
                 obj.FactoryMoney = FactoryMoney
                 obj.enough = enough
